@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -20,20 +21,14 @@ import java.time.LocalDate;
 public class Cliente{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)//Não funcionou com o identity
     private Long id;
 
-    @Column
-    @NonNull
+    //Não preciso colocar as validações aqui pois já estou validando no ClienteDTO
     private String nome;
 
-    @Column
-    @NonNull
-    //@Size(min=11, max=11)
     private String cpf;
 
-    @Column
-    @NonNull
     private LocalDate dataNascimento;
 
 

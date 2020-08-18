@@ -16,15 +16,13 @@ import java.util.Optional;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-//    @Query(value = "select nome, extract(year from age(cliente.data_nascimento))) " +
-//            "from cliente", nativeQuery = true)
-//    public Page<Map<String, String>> find(Pageable pageable);
+    @Query(value = "select nome, extract(year from age(cliente.data_nascimento)) " +
+            "from cliente", nativeQuery = true)
+    public Page<List<Map<String, String>>> find(Pageable pageable);
 
     public Optional<Cliente> findByCpf(String cpf);
 
-    public Page<Cliente> findByCpfContainingIgnoreCaseAndNomeContainingIgnoreCase(String cpf, String nome, Pageable pageable);
-
-    public Page<Cliente> findByCpfContainingIgnoreCase(String cpf, Pageable pageable);
+    public Page<Cliente> findByCpf(String cpf, Pageable pageable);
 
     public Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 

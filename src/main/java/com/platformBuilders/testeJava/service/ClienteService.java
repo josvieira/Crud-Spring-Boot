@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.platformBuilders.testeJava.repository.ClienteRepository;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -20,34 +22,34 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+
     public ClienteRespostaDto cadastrarCliente(ClienteDto clienteDto) {
         Cliente cliente = ClienteMapeador.transformarEmCliente(clienteDto);
         return ClienteRespostaMapeador.transformarEmDto(clienteRepository.save(cliente));
     }
+
+    public Page<List<Map<String, String>>> find(Pageable pageable){
+        return clienteRepository.find(pageable);
+    }
+
 
     public Page<ClienteRespostaDto> listarClientes(Pageable pageable) {
         Page<Cliente> pageCliente = clienteRepository.findAll(pageable);
         return new PageImpl<ClienteRespostaDto>(ClienteRespostaMapeador.converterEm(pageCliente.getContent()), pageable, pageCliente.getTotalElements());
     }
 
-//    public Page<Map<String, String>> listarClientes(Pageable pageable){
-//        return clienteRepository.find(pageable);
-//    }
-
-    public Optional<Cliente> buscarClienteCpf(String cpf){
-       return clienteRepository.findByCpf(cpf);
+    public Page<ClienteRespostaDto> buscarClienteCpf(String cpf, Pageable pageable){
+        Page<Cliente> cliente = clienteRepository.findByCpf(cpf, pageable);
+        return new PageImpl<>(ClienteRespostaMapeador.converterEm(cliente.getContent()), pageable, cliente.getTotalElements());
     }
 
-//    public Page<ClienteRespostaDto> buscarClientes(String nome, String cpf, Pageable pageable) {
-//        if(nome.isEmpty()){
-//            //return clienteRepository.findByCpfContainingIgnoreCase(cpf, pageable);
-//        }
-//        if (cpf.isEmpty()){
-//            //return clienteRepository.findByNomeContainingIgnoreCase(nome, pageable);
-//        }
-//
-//        return clienteRepository.findByCpfContainingIgnoreCaseAndNomeContainingIgnoreCase(cpf, nome, pageable);
-//    }
+    public Optional<Cliente> buscarClientePorCpf(String cpf) {
+        return clienteRepository.findByCpf(cpf);
+    }
 
+    public Page<ClienteRespostaDto> buscarClienteNome(String nome, Pageable pageable) {
+        Page<Cliente> cliente = clienteRepository.findByNomeContainingIgnoreCase(nome, pageable);
+        return new PageImpl<ClienteRespostaDto>(ClienteRespostaMapeador.converterEm(cliente.getContent()), pageable, cliente.getTotalElements());
+    }
 
 }

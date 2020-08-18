@@ -14,6 +14,7 @@ public class ClienteRespostaMapeador {
     }
 
     public static List<ClienteRespostaDto> converterEm(List<Cliente> clientes){
+        System.out.println(clientes.get(0).getNome());
         List<ClienteRespostaDto> dtoList = new ArrayList<ClienteRespostaDto>();
         for (Cliente iterator: clientes){
             dtoList.add(transformarEmDto(iterator));

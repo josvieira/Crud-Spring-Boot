@@ -26,8 +26,8 @@ public class ClienteController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<ClienteRespostaDto> cadastrarCliente(@RequestBody @Valid ClienteDto clienteDto) {
-        //Ainda não consigo capturar a exceção que o @Valid dispara
-        Optional<Cliente> cliente = clienteService.buscarClienteCpf(clienteDto.getCpf());
+        //Ainda não consigo capturar a exceção que o @Valid dispara, as mensagens aparecem no terminal da IDE mas não na resposta para o client
+        Optional<Cliente> cliente = clienteService.buscarClientePorCpf(clienteDto.getCpf());
         if (!cliente.isPresent()) {
             return new ResponseEntity<>(clienteService.cadastrarCliente(clienteDto), HttpStatus.CREATED);
         } else {
@@ -35,24 +35,42 @@ public class ClienteController {
         }
     }
 
+    @GetMapping(path = "/idade")
+    /*
+    *Esse get é parecido com o buscarCliente, porém quiz testar uma abordagem diferente no retorno
+    */
+    private ResponseEntity<Page<List<Map<String, String>>>> find(Pageable pageable){
+        return new ResponseEntity<>(clienteService.find(pageable), HttpStatus.OK);
+    }
+
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     private ResponseEntity<Page<ClienteRespostaDto>> buscarCliente(Pageable pageable,
                                               @RequestParam(required = false, defaultValue = "") String nome,
                                               @RequestParam(required = false, defaultValue = "") String cpf){
-        //if (nome.isEmpty() && cpf.isEmpty()){
+        if (nome.isEmpty() && cpf.isEmpty()){
             return new ResponseEntity<>(clienteService.listarClientes(pageable), HttpStatus.OK);
-       // }
-//        Page<ClienteRespostaDto> cliente = clienteService.buscarClientes(nome, cpf, pageable);
-//        if(cliente.getContent().isEmpty()){
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        }
-//        else{
-//            return new ResponseEntity<>(cliente, HttpStatus.FOUND);
-//        }
+        }
+        else {
+            //Da forma que está implementada prioriza a busca pelo nome, não fará a busca combinando Cpf e nome
+            if (nome.isEmpty()) {
+                try {
+                    return new ResponseEntity<>(clienteService.buscarClienteCpf(cpf, pageable), HttpStatus.FOUND);
+                } catch (Exception e) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+            else{
+                System.out.println("Entrou no cpf.isEmpty");
+                try {
+                    return new ResponseEntity<>(clienteService.buscarClienteNome(nome, pageable), HttpStatus.FOUND);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+        }
 
     }
 
-//
-//    }
 }

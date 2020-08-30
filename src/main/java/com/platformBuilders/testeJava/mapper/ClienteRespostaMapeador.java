@@ -1,4 +1,4 @@
-package com.platformBuilders.testeJava.mapperFake;
+package com.platformBuilders.testeJava.mapper;
 
 import com.platformBuilders.testeJava.dto.ClienteRespostaDto;
 import com.platformBuilders.testeJava.models.Cliente;
@@ -10,11 +10,10 @@ import java.util.List;
 public class ClienteRespostaMapeador {
 
     public static ClienteRespostaDto transformarEmDto(Cliente cliente){
-        return new ClienteRespostaDto(cliente.getNome(), calcularIdade(cliente.getDataNascimento()));
+        return new ClienteRespostaDto(cliente.getId(), cliente.getNome(), calcularIdade(cliente.getDataNascimento()));
     }
 
     public static List<ClienteRespostaDto> converterEm(List<Cliente> clientes){
-        System.out.println(clientes.get(0).getNome());
         List<ClienteRespostaDto> dtoList = new ArrayList<ClienteRespostaDto>();
         for (Cliente iterator: clientes){
             dtoList.add(transformarEmDto(iterator));

@@ -1,4 +1,4 @@
-package com.platformBuilders.testeJava.mapperFake;
+package com.platformBuilders.testeJava.mapper;
 
 import com.platformBuilders.testeJava.dto.ClienteDto;
 import com.platformBuilders.testeJava.models.Cliente;

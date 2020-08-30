@@ -2,8 +2,8 @@ package com.platformBuilders.testeJava.service;
 
 import com.platformBuilders.testeJava.dto.ClienteDto;
 import com.platformBuilders.testeJava.dto.ClienteRespostaDto;
-import com.platformBuilders.testeJava.mapperFake.ClienteMapeador;
-import com.platformBuilders.testeJava.mapperFake.ClienteRespostaMapeador;
+import com.platformBuilders.testeJava.mapper.ClienteMapeador;
+import com.platformBuilders.testeJava.mapper.ClienteRespostaMapeador;
 import com.platformBuilders.testeJava.models.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,4 +52,21 @@ public class ClienteService {
         return new PageImpl<ClienteRespostaDto>(ClienteRespostaMapeador.converterEm(cliente.getContent()), pageable, cliente.getTotalElements());
     }
 
+    public void removerCliente(Cliente cliente) {
+        clienteRepository.delete(cliente);
+    }
+
+    public Optional<Cliente> buscarClienteId(Long id) {
+        return clienteRepository.findById(id);
+    }
+
+    public Cliente atualizarCliente(Cliente cliente) throws Exception {
+        Optional<Cliente> cli = clienteRepository.findByCpf(cliente.getCpf());
+        if (cli.isPresent())
+            throw new Exception("CPF já existe no banco");
+        return clienteRepository.save(cliente);
+    }
+    public Cliente atualizarNomeCliente(Cliente cliente){
+        return clienteRepository.save(cliente);
+    }
 }
